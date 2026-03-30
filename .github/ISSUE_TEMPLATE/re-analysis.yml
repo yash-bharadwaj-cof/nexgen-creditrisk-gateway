@@ -1,0 +1,78 @@
+name: "RE: Reverse Engineering Analysis"
+description: "Analyze a specific aspect of the legacy JBoss Fuse service"
+title: "[RE-XXX] "
+labels: ["phase:RE", "type:analysis"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Reverse Engineering Analysis
+        Analyze the legacy codebase and produce a structured document in `docs/re/`.
+
+  - type: input
+    id: re-id
+    attributes:
+      label: RE ID
+      description: "e.g., RE-001, RE-002"
+      placeholder: "RE-001"
+    validations:
+      required: true
+
+  - type: input
+    id: output-file
+    attributes:
+      label: Output File
+      description: "Path to the document this issue will produce"
+      placeholder: "docs/re/00-service-overview.md"
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Analysis Scope
+      description: "What aspects of the codebase does this analysis cover?"
+      placeholder: "List the classes, files, or architectural areas to analyze"
+    validations:
+      required: true
+
+  - type: textarea
+    id: prompt
+    attributes:
+      label: Analysis Prompt
+      description: "The detailed prompt/instructions for generating the RE document"
+      placeholder: "Detailed instructions for what to analyze and document..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: "What must be true for this analysis to be complete?"
+      value: |
+        - [ ] Document created at the specified output path
+        - [ ] All in-scope classes/files analyzed
+        - [ ] Cross-references to actual source files included
+        - [ ] No assumptions — every claim traceable to code
+    validations:
+      required: true
+
+  - type: dropdown
+    id: scope-label
+    attributes:
+      label: Scope Area
+      description: "Primary scope of this analysis"
+      options:
+        - endpoint
+        - route
+        - model
+        - logic
+        - integration
+        - config
+        - security
+        - logging
+        - cross-cutting
+    validations:
+      required: true

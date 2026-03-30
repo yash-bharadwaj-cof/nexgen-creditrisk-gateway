@@ -1,0 +1,62 @@
+name: "VV: Verification & Validation"
+description: "Verify an RE document against the actual codebase"
+title: "[VV-XXX] Verify: "
+labels: ["phase:VV", "type:document"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Verification & Validation
+        Cross-reference an RE document against actual code to confirm accuracy and completeness.
+
+  - type: input
+    id: vv-id
+    attributes:
+      label: VV ID
+      description: "e.g., VV-001, VV-002"
+      placeholder: "VV-001"
+    validations:
+      required: true
+
+  - type: input
+    id: re-reference
+    attributes:
+      label: Linked RE Issue
+      description: "The RE issue this verifies (e.g., #1)"
+      placeholder: "#1"
+    validations:
+      required: true
+
+  - type: input
+    id: document-path
+    attributes:
+      label: Document Under Review
+      description: "Path to the RE document being verified"
+      placeholder: "docs/re/00-service-overview.md"
+    validations:
+      required: true
+
+  - type: textarea
+    id: verification-prompt
+    attributes:
+      label: Verification Prompt
+      description: "The detailed prompt/instructions for verifying this RE document"
+      placeholder: "Detailed instructions for what to verify..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: checklist
+    attributes:
+      label: Verification Checklist
+      description: "Specific items to verify against the code"
+      value: |
+        - [ ] All claims in the document are traceable to source code
+        - [ ] No source files within scope are missing from the document
+        - [ ] Field names, types, and counts match actual code
+        - [ ] Route topology matches blueprint.xml
+        - [ ] No contradictions with other RE documents
+        - [ ] Reviewed by: ___
+    validations:
+      required: true
