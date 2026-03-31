@@ -12,8 +12,8 @@
     <description>Credit risk scoring gateway exposing SOAP and REST endpoints with external credit bureau integration</description>
 
     <properties>
-        <camel.version>2.17.7</camel.version>
-        <cxf.version>3.1.18</cxf.version>
+        <camel.version>3.14.9</camel.version>
+        <cxf.version>3.4.9</cxf.version>
         <slf4j.version>1.7.36</slf4j.version>
         <version.maven-bundle-plugin>3.2.0</version.maven-bundle-plugin>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -30,11 +30,9 @@
             <artifactId>camel-core</artifactId>
             <version>${camel.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-blueprint</artifactId>
-            <version>${camel.version}</version>
-        </dependency>
+        <!-- camel-blueprint (OSGi Blueprint runtime) was moved to the Camel Karaf project
+             in Camel 3.x and is provided by the Karaf container at runtime; not needed
+             for compilation or testing. -->
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-cxf</artifactId>
@@ -124,15 +122,17 @@
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
+        <!-- reload4j: actively maintained, security-patched fork of log4j 1.x -->
+        <dependency>
+            <groupId>ch.qos.reload4j</groupId>
+            <artifactId>reload4j</artifactId>
+            <version>1.2.24</version>
+        </dependency>
+        <!-- SLF4J binding for reload4j (replaces the EOL slf4j-log4j12) -->
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
+            <artifactId>slf4j-reload4j</artifactId>
             <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
         </dependency>
 
         <!-- Commons -->
