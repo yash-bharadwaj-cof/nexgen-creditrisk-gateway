@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+    name="CreditRiskService"
+    targetNamespace="http://ws.esb.nexgen.com/schema/creditrisk/v1"
+    xmlns:tns="http://ws.esb.nexgen.com/schema/creditrisk/v1"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+
+    <!-- ============================================================ -->
+    <!-- Types                                                         -->
+    <!-- ============================================================ -->
+    <wsdl:types>
+        <xsd:schema
+            targetNamespace="http://ws.esb.nexgen.com/schema/creditrisk/v1"
+            xmlns:tns="http://ws.esb.nexgen.com/schema/creditrisk/v1"
+            elementFormDefault="qualified">
+
+            <!-- Enumerations -->
+            <xsd:simpleType name="ProvinceType">
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="ON"/>
+                    <xsd:enumeration value="QC"/>
+                    <xsd:enumeration value="BC"/>
+                    <xsd:enumeration value="AB"/>
+                    <xsd:enumeration value="MB"/>
+                    <xsd:enumeration value="SK"/>
+                    <xsd:enumeration value="NS"/>
+                    <xsd:enumeration value="NB"/>
+                    <xsd:enumeration value="NL"/>
+                    <xsd:enumeration value="PE"/>
+                    <xsd:enumeration value="NT"/>
+                    <xsd:enumeration value="YT"/>
+                    <xsd:enumeration value="NU"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+
+            <xsd:simpleType name="RequestChannelType">
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="ONLINE"/>
+                    <xsd:enumeration value="MOBILE"/>
+                    <xsd:enumeration value="BRANCH"/>
+                    <xsd:enumeration value="BROKER"/>
+                    <xsd:enumeration value="CALL_CENTER"/>
+                    <xsd:enumeration value="API"/>
+                    <xsd:enumeration value="BATCH"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+
+            <!-- RequestHeader -->
+            <xsd:complexType name="RequestHeader">
+                <xsd:sequence>
+                    <xsd:element name="transactionId" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+                    <xsd:element name="timestamp"     type="xsd:string" minOccurs="1" maxOccurs="1"/>
+                    <xsd:element name="sourceSystem"  type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="userId"        type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- ResponseHeader -->
+            <xsd:complexType name="ResponseHeader">
+                <xsd:sequence>
+                    <xsd:element name="transactionId"  type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="timestamp"      type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="statusCode"     type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="statusMessage"  type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- CreditScoreDetail -->
+            <xsd:complexType name="CreditScoreDetail">
+                <xsd:sequence>
+                    <xsd:element name="bureauScore"      type="xsd:int"    minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="bureauScoreRange" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="delinquencyCount" type="xsd:int"    minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="inquiryCount"     type="xsd:int"    minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="openAccountCount" type="xsd:int"    minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="totalCreditLimit" type="xsd:double" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="totalBalance"     type="xsd:double" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="utilizationRate"  type="xsd:double" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- IncomeVerificationDetail -->
+            <xsd:complexType name="IncomeVerificationDetail">
+                <xsd:sequence>
+                    <xsd:element name="verificationStatus" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="reportedIncome"     type="xsd:double" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="verifiedIncome"     type="xsd:double" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="incomeSource"       type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="debtToIncomeRatio"  type="xsd:double" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- EmploymentRiskDetail -->
+            <xsd:complexType name="EmploymentRiskDetail">
+                <xsd:sequence>
+                    <xsd:element name="employmentType"   type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="yearsEmployed"    type="xsd:int"    minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="industryCategory" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="riskLevel"        type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- DebtServiceDetail -->
+            <xsd:complexType name="DebtServiceDetail">
+                <xsd:sequence>
+                    <xsd:element name="totalMonthlyDebt"     type="xsd:double" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="totalMonthlyIncome"   type="xsd:double" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="debtServiceRatio"     type="xsd:double" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="totalDebtServiceRatio" type="xsd:double" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="affordabilityRating"  type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- CreditRiskReqType -->
+            <xsd:complexType name="CreditRiskReqType">
+                <xsd:sequence>
+                    <xsd:element name="requestHeader"        type="tns:RequestHeader" minOccurs="1" maxOccurs="1"/>
+                    <xsd:element name="applicantId"          type="xsd:string"        minOccurs="1" maxOccurs="1"/>
+                    <xsd:element name="firstName"            type="xsd:string"        minOccurs="1" maxOccurs="1"/>
+                    <xsd:element name="lastName"             type="xsd:string"        minOccurs="1" maxOccurs="1"/>
+                    <xsd:element name="dateOfBirth"          type="xsd:string"        minOccurs="1" maxOccurs="1"/>
+                    <xsd:element name="socialInsuranceNumber" type="xsd:string"       minOccurs="1" maxOccurs="1"/>
+                    <xsd:element name="employmentStatus"     type="xsd:string"        minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="annualIncome"         type="xsd:double"        minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="province"             type="tns:ProvinceType"       minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="postalCode"           type="xsd:string"             minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="requestChannel"       type="tns:RequestChannelType" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="productType"          type="xsd:string"        minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="requestedAmount"      type="xsd:double"        minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- CreditRiskResType -->
+            <xsd:complexType name="CreditRiskResType">
+                <xsd:sequence>
+                    <xsd:element name="responseHeader"     type="tns:ResponseHeader"          minOccurs="1" maxOccurs="1"/>
+                    <xsd:element name="applicantId"        type="xsd:string"                  minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="riskCategory"       type="xsd:string"                  minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="overallScore"       type="xsd:int"                     minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="creditScoreDetail"  type="tns:CreditScoreDetail"       minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="incomeVerification" type="tns:IncomeVerificationDetail" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="employmentRisk"     type="tns:EmploymentRiskDetail"    minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="debtService"        type="tns:DebtServiceDetail"       minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="riskFactors"        minOccurs="0" maxOccurs="1">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="factor" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+                            </xsd:sequence>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="recommendation"     type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="accuracyCode"       type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="scoringModelVersion" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- DetailException (fault detail) -->
+            <xsd:complexType name="DetailException">
+                <xsd:sequence>
+                    <xsd:element name="errorCode"     type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="errorMessage"  type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="correlationId" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Document/Literal Wrapped message elements -->
+            <xsd:element name="assessCreditRisk">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="CreditRiskRequest" type="tns:CreditRiskReqType"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="assessCreditRiskResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="CreditRiskResponse" type="tns:CreditRiskResType"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="CreditRiskServiceException">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="DetailException" type="tns:DetailException"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+        </xsd:schema>
+    </wsdl:types>
+
+    <!-- ============================================================ -->
+    <!-- Messages                                                      -->
+    <!-- ============================================================ -->
+    <wsdl:message name="assessCreditRiskRequest">
+        <wsdl:part name="parameters" element="tns:assessCreditRisk"/>
+    </wsdl:message>
+
+    <wsdl:message name="assessCreditRiskResponse">
+        <wsdl:part name="parameters" element="tns:assessCreditRiskResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="CreditRiskServiceException">
+        <wsdl:part name="fault" element="tns:CreditRiskServiceException"/>
+    </wsdl:message>
+
+    <!-- ============================================================ -->
+    <!-- Port Type                                                     -->
+    <!-- ============================================================ -->
+    <wsdl:portType name="CreditRiskSoapSvc">
+        <wsdl:operation name="assessCreditRisk">
+            <wsdl:input  message="tns:assessCreditRiskRequest"/>
+            <wsdl:output message="tns:assessCreditRiskResponse"/>
+            <wsdl:fault  name="CreditRiskServiceException" message="tns:CreditRiskServiceException"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <!-- ============================================================ -->
+    <!-- Binding — Document / Literal                                  -->
+    <!-- ============================================================ -->
+    <wsdl:binding name="CreditRiskSoapSvcBinding" type="tns:CreditRiskSoapSvc">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="assessCreditRisk">
+            <soap:operation soapAction="http://ws.esb.nexgen.com/schema/creditrisk/v1/assessCreditRisk" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="CreditRiskServiceException">
+                <soap:fault name="CreditRiskServiceException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <!-- ============================================================ -->
+    <!-- Service                                                       -->
+    <!-- ============================================================ -->
+    <wsdl:service name="CreditRiskService">
+        <wsdl:port name="CreditRiskSoapSvcPort" binding="tns:CreditRiskSoapSvcBinding">
+            <soap:address location="http://localhost:8181/cxf/creditrisk/v1"/>
+        </wsdl:port>
+    </wsdl:service>
+
+</wsdl:definitions>

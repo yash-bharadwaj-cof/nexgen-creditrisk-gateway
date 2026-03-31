@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+    name="ExternalBureauService"
+    targetNamespace="http://ws.esb.nexgen.com/bureau/v1"
+    xmlns:tns="http://ws.esb.nexgen.com/bureau/v1"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+
+    <!-- ============================================================ -->
+    <!-- Types                                                         -->
+    <!-- ============================================================ -->
+    <wsdl:types>
+        <xsd:schema
+            targetNamespace="http://ws.esb.nexgen.com/bureau/v1"
+            xmlns:tns="http://ws.esb.nexgen.com/bureau/v1"
+            elementFormDefault="qualified">
+
+            <!-- BureauSubscriber -->
+            <xsd:complexType name="BureauSubscriber">
+                <xsd:sequence>
+                    <xsd:element name="subscriberCode" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="subscriberName" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- BureauSubject -->
+            <xsd:complexType name="BureauSubject">
+                <xsd:sequence>
+                    <xsd:element name="firstName"             type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="lastName"              type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="dateOfBirth"           type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="socialInsuranceNumber" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="province"              type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="postalCode"            type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- BureauInquiryRequest -->
+            <xsd:complexType name="BureauInquiryRequest">
+                <xsd:sequence>
+                    <xsd:element name="requestId"   type="xsd:string"           minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="timestamp"   type="xsd:string"           minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="subscriber"  type="tns:BureauSubscriber" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="subject"     type="tns:BureauSubject"    minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="productType" type="xsd:string"           minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- BureauInquiryResponse -->
+            <xsd:complexType name="BureauInquiryResponse">
+                <xsd:sequence>
+                    <xsd:element name="requestId"           type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="responseId"          type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="creditScore"         type="xsd:int"    minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="delinquencyCount"    type="xsd:int"    minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="inquiryCount"        type="xsd:int"    minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="openTradelineCount"  type="xsd:int"    minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="totalCreditLimit"    type="xsd:double" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="totalBalance"        type="xsd:double" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="errorCode"           type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="errorMessage"        type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Document/Literal Wrapped message elements -->
+            <xsd:element name="inquire">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="BureauInquiryRequest" type="tns:BureauInquiryRequest"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="inquireResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="BureauInquiryResponse" type="tns:BureauInquiryResponse"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+        </xsd:schema>
+    </wsdl:types>
+
+    <!-- ============================================================ -->
+    <!-- Messages                                                      -->
+    <!-- ============================================================ -->
+    <wsdl:message name="inquireRequest">
+        <wsdl:part name="parameters" element="tns:inquire"/>
+    </wsdl:message>
+
+    <wsdl:message name="inquireResponse">
+        <wsdl:part name="parameters" element="tns:inquireResponse"/>
+    </wsdl:message>
+
+    <!-- ============================================================ -->
+    <!-- Port Type                                                     -->
+    <!-- ============================================================ -->
+    <wsdl:portType name="BureauScoreService">
+        <wsdl:operation name="inquire">
+            <wsdl:input  message="tns:inquireRequest"/>
+            <wsdl:output message="tns:inquireResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <!-- ============================================================ -->
+    <!-- Binding — Document / Literal                                  -->
+    <!-- ============================================================ -->
+    <wsdl:binding name="BureauScoreServiceBinding" type="tns:BureauScoreService">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="inquire">
+            <soap:operation soapAction="http://ws.esb.nexgen.com/bureau/v1/inquire" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <!-- ============================================================ -->
+    <!-- Service                                                       -->
+    <!-- ============================================================ -->
+    <wsdl:service name="ExternalBureauService">
+        <wsdl:port name="BureauScoreServicePort" binding="tns:BureauScoreServiceBinding">
+            <soap:address location="http://localhost:8181/cxf/bureau/v1"/>
+        </wsdl:port>
+    </wsdl:service>
+
+</wsdl:definitions>
