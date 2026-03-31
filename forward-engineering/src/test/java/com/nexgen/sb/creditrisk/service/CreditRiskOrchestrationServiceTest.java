@@ -7,14 +7,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.nexgen.esb.creditrisk.generated.BureauInquiryRequest;
-import com.nexgen.esb.creditrisk.generated.BureauInquiryResponse;
-import com.nexgen.esb.creditrisk.model.CreditRiskReqType;
-import com.nexgen.esb.creditrisk.model.CreditRiskResType;
-import com.nexgen.esb.creditrisk.model.CreditScoreDetail;
-import com.nexgen.esb.creditrisk.model.RequestHeader;
-import com.nexgen.esb.creditrisk.model.ResponseHeader;
-import com.nexgen.esb.creditrisk.scoring.StandardScoringStrategy;
+import com.nexgen.sb.creditrisk.generated.BureauInquiryRequest;
+import com.nexgen.sb.creditrisk.generated.BureauInquiryResponse;
+import com.nexgen.sb.creditrisk.model.CreditRiskReqType;
+import com.nexgen.sb.creditrisk.model.CreditRiskResType;
+import com.nexgen.sb.creditrisk.model.CreditScoreDetail;
+import com.nexgen.sb.creditrisk.model.RequestHeader;
+import com.nexgen.sb.creditrisk.model.ResponseHeader;
+import com.nexgen.sb.creditrisk.scoring.StandardScoringStrategy;
 import com.nexgen.sb.creditrisk.exception.CreditRiskProcessingException;
 import com.nexgen.sb.creditrisk.exception.ValidationException;
 

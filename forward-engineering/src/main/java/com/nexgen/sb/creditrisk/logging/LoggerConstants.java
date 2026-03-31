@@ -2,7 +2,7 @@ package com.nexgen.sb.creditrisk.logging;
 
 /**
  * Constants for transaction log field names.
- * Migrated from com.nexgen.esb.creditrisk.logging.LoggerConstants.
+ * Migrated from com.nexgen.sb.creditrisk.logging.LoggerConstants.
  */
 public interface LoggerConstants {
     String LOG_TRANSACTION_ID = "TRANSACTION_ID";

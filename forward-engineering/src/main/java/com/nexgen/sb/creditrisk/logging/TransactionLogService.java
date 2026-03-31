@@ -1,7 +1,7 @@
 package com.nexgen.sb.creditrisk.logging;
 
-import com.nexgen.esb.creditrisk.model.CreditRiskReqType;
-import com.nexgen.esb.creditrisk.model.CreditRiskResType;
+import com.nexgen.sb.creditrisk.model.CreditRiskReqType;
+import com.nexgen.sb.creditrisk.model.CreditRiskResType;
 import com.nexgen.sb.creditrisk.config.NexgenProperties;
 import org.bson.Document;
 import org.slf4j.Logger;

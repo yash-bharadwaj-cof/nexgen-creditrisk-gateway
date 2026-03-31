@@ -5,8 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.nexgen.esb.creditrisk.model.CreditRiskReqType;
-import com.nexgen.esb.creditrisk.model.ProvinceType;
+import com.nexgen.sb.creditrisk.model.CreditRiskReqType;
+import com.nexgen.sb.creditrisk.model.ProvinceType;
 import com.nexgen.sb.creditrisk.exception.ValidationException;
 
 /**

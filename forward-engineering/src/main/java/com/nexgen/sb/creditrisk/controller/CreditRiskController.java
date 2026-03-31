@@ -1,8 +1,8 @@
 package com.nexgen.sb.creditrisk.controller;
 
-import com.nexgen.esb.creditrisk.model.CreditRiskReqType;
-import com.nexgen.esb.creditrisk.model.CreditRiskResType;
-import com.nexgen.esb.creditrisk.model.RequestHeader;
+import com.nexgen.sb.creditrisk.model.CreditRiskReqType;
+import com.nexgen.sb.creditrisk.model.CreditRiskResType;
+import com.nexgen.sb.creditrisk.model.RequestHeader;
 import com.nexgen.sb.creditrisk.service.CreditRiskOrchestrationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

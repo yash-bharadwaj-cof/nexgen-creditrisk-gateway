@@ -9,12 +9,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.nexgen.esb.creditrisk.generated.BureauInquiryRequest;
-import com.nexgen.esb.creditrisk.generated.BureauInquiryResponse;
-import com.nexgen.esb.creditrisk.generated.BureauSubscriber;
-import com.nexgen.esb.creditrisk.generated.BureauSubject;
-import com.nexgen.esb.creditrisk.model.CreditRiskReqType;
-import com.nexgen.esb.creditrisk.model.CreditScoreDetail;
+import com.nexgen.sb.creditrisk.generated.BureauInquiryRequest;
+import com.nexgen.sb.creditrisk.generated.BureauInquiryResponse;
+import com.nexgen.sb.creditrisk.generated.BureauSubscriber;
+import com.nexgen.sb.creditrisk.generated.BureauSubject;
+import com.nexgen.sb.creditrisk.model.CreditRiskReqType;
+import com.nexgen.sb.creditrisk.model.CreditScoreDetail;
 
 /**
  * Handles all interactions with the external credit bureau.

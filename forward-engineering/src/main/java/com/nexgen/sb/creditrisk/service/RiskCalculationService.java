@@ -10,15 +10,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.nexgen.esb.creditrisk.model.CreditRiskReqType;
-import com.nexgen.esb.creditrisk.model.CreditRiskResType;
-import com.nexgen.esb.creditrisk.model.CreditScoreDetail;
-import com.nexgen.esb.creditrisk.model.DebtServiceDetail;
-import com.nexgen.esb.creditrisk.model.EmploymentRiskDetail;
-import com.nexgen.esb.creditrisk.model.IncomeVerificationDetail;
-import com.nexgen.esb.creditrisk.model.ResponseHeader;
-import com.nexgen.esb.creditrisk.scoring.ScoringStrategy;
-import com.nexgen.esb.creditrisk.scoring.StandardScoringStrategy;
+import com.nexgen.sb.creditrisk.model.CreditRiskReqType;
+import com.nexgen.sb.creditrisk.model.CreditRiskResType;
+import com.nexgen.sb.creditrisk.model.CreditScoreDetail;
+import com.nexgen.sb.creditrisk.model.DebtServiceDetail;
+import com.nexgen.sb.creditrisk.model.EmploymentRiskDetail;
+import com.nexgen.sb.creditrisk.model.IncomeVerificationDetail;
+import com.nexgen.sb.creditrisk.model.ResponseHeader;
+import com.nexgen.sb.creditrisk.scoring.ScoringStrategy;
+import com.nexgen.sb.creditrisk.scoring.StandardScoringStrategy;
 
 /**
  * Applies the selected scoring strategy to produce the final credit risk assessment.

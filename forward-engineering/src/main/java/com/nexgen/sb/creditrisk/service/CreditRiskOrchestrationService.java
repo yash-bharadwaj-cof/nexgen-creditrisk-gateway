@@ -4,13 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.nexgen.esb.creditrisk.generated.BureauInquiryRequest;
-import com.nexgen.esb.creditrisk.generated.BureauInquiryResponse;
-import com.nexgen.esb.creditrisk.model.CreditRiskReqType;
-import com.nexgen.esb.creditrisk.model.CreditRiskResType;
-import com.nexgen.esb.creditrisk.scoring.ScoringStrategy;
+import com.nexgen.sb.creditrisk.generated.BureauInquiryRequest;
+import com.nexgen.sb.creditrisk.generated.BureauInquiryResponse;
+import com.nexgen.sb.creditrisk.model.CreditRiskReqType;
+import com.nexgen.sb.creditrisk.model.CreditRiskResType;
+import com.nexgen.sb.creditrisk.scoring.ScoringStrategy;
 import com.nexgen.sb.creditrisk.exception.CreditRiskProcessingException;
 import com.nexgen.sb.creditrisk.exception.ValidationException;
+import com.nexgen.sb.creditrisk.logging.TransactionLogService;
 
 /**
  * Central orchestration service that replaces the four legacy Apache Camel XML routes:

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- ================================================================
+         SIN masking converter — replaces 9-digit SIN patterns with "***"
+         in all log output to prevent PII leakage.
+         ================================================================ -->
+    <conversionRule conversionWord="maskedMsg"
+                    converterClass="ch.qos.logback.classic.pattern.MessageConverter"/>
+
+    <!-- Console appender (used in all profiles) -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %replace(%msg){'\b\d{3}[-\s]?\d{3}[-\s]?\d{3}\b', '***-***-***'}%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Rolling file appender (enabled in qa and prod profiles) -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/nexgen-creditrisk.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/nexgen-creditrisk.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %replace(%msg){'\b\d{3}[-\s]?\d{3}[-\s]?\d{3}\b', '***-***-***'}%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ============ Profile: dev ============ -->
+    <springProfile name="dev">
+        <logger name="com.nexgen.sb" level="DEBUG"/>
+        <logger name="org.apache.cxf" level="INFO"/>
+        <logger name="org.springframework.data.mongodb" level="DEBUG"/>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <!-- ============ Profile: qa ============ -->
+    <springProfile name="qa">
+        <logger name="com.nexgen.sb" level="DEBUG"/>
+        <logger name="org.apache.cxf" level="WARN"/>
+        <logger name="org.springframework.data.mongodb" level="INFO"/>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
+
+    <!-- ============ Profile: prod ============ -->
+    <springProfile name="prod">
+        <logger name="com.nexgen.sb" level="INFO"/>
+        <logger name="org.apache.cxf" level="WARN"/>
+        <logger name="org.springframework.data.mongodb" level="WARN"/>
+        <root level="WARN">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
+
+    <!-- ============ Default (no profile) ============ -->
+    <springProfile name="default">
+        <logger name="com.nexgen.sb" level="DEBUG"/>
+        <logger name="org.apache.cxf" level="WARN"/>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+</configuration>

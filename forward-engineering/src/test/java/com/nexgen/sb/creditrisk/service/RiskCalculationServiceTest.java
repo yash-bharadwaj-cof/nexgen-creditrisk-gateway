@@ -9,11 +9,11 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.nexgen.esb.creditrisk.model.CreditRiskReqType;
-import com.nexgen.esb.creditrisk.model.CreditRiskResType;
-import com.nexgen.esb.creditrisk.model.CreditScoreDetail;
-import com.nexgen.esb.creditrisk.model.RequestHeader;
-import com.nexgen.esb.creditrisk.scoring.StandardScoringStrategy;
+import com.nexgen.sb.creditrisk.model.CreditRiskReqType;
+import com.nexgen.sb.creditrisk.model.CreditRiskResType;
+import com.nexgen.sb.creditrisk.model.CreditScoreDetail;
+import com.nexgen.sb.creditrisk.model.RequestHeader;
+import com.nexgen.sb.creditrisk.scoring.StandardScoringStrategy;
 
 class RiskCalculationServiceTest {
 

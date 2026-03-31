@@ -5,10 +5,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.nexgen.esb.creditrisk.generated.BureauInquiryRequest;
-import com.nexgen.esb.creditrisk.generated.BureauInquiryResponse;
-import com.nexgen.esb.creditrisk.model.CreditRiskReqType;
-import com.nexgen.esb.creditrisk.model.CreditScoreDetail;
+import com.nexgen.sb.creditrisk.generated.BureauInquiryRequest;
+import com.nexgen.sb.creditrisk.generated.BureauInquiryResponse;
+import com.nexgen.sb.creditrisk.model.CreditRiskReqType;
+import com.nexgen.sb.creditrisk.model.CreditScoreDetail;
 import com.nexgen.sb.creditrisk.config.BureauProperties;
 
 class BureauServiceTest {

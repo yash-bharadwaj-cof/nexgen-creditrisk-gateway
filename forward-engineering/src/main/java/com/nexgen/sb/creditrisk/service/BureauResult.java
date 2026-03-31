@@ -1,6 +1,6 @@
 package com.nexgen.sb.creditrisk.service;
 
-import com.nexgen.esb.creditrisk.model.CreditScoreDetail;
+import com.nexgen.sb.creditrisk.model.CreditScoreDetail;
 
 /**
  * Holds the result of a credit bureau inquiry, combining the mapped
