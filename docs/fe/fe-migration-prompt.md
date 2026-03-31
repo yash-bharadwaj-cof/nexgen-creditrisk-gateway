@@ -4,6 +4,22 @@
 
 ---
 
+> **CRITICAL — Incremental Build Rules (Conflict Prevention)**
+>
+> The `forward-engineering/` directory already contains scaffolded code from earlier issues.
+> Every issue MUST follow these rules:
+>
+> 1. **DO NOT recreate or overwrite existing files.** Read existing files first, then add to them.
+> 2. **`pom.xml`** — ONLY append new `<dependency>` entries inside the existing `<dependencies>` block. NEVER replace the entire file. The parent, groupId, Java version, and existing dependencies are already correct.
+> 3. **`.gitignore`** — DO NOT create or modify. It already exists.
+> 4. **`application.yml` / profile YMLs** — ONLY append new properties. DO NOT replace the existing content.
+> 5. **Config classes** (`BureauProperties.java`, `ScoringProperties.java`, `NexgenProperties.java`, `SecurityConfig.java`) — Already exist. Modify only if additional fields or beans are needed for YOUR issue.
+> 6. **Model classes** — Already migrated to `jakarta.xml.bind`. Import from `com.nexgen.sb.creditrisk.model`, do not recreate.
+> 7. **`CreditRiskApplication.java`** — Already exists. DO NOT recreate.
+> 8. **All new source files** MUST go under `forward-engineering/src/`. NOT the repo root `src/`.
+> 9. When adding a new service/class, **import existing classes** from the codebase — do not duplicate or shadow them.
+> 10. Before writing any file, **check if it already exists** on the branch. If it does, edit it rather than creating a new one.
+
 ## 1. Migration Overview
 
 | **Field** | **Value** |
