@@ -1,6 +1,6 @@
 package com.nexgen.esb.creditrisk.processor;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;

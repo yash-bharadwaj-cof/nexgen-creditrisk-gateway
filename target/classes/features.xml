@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="nexgen-creditrisk-gateway-${project.version}"
+          xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
+    <feature name="nexgen-creditrisk-gateway" version="${project.version}" resolver="(obr)">
+        <bundle>mvn:${project.groupId}/${project.artifactId}/${project.version}</bundle>
+    </feature>
+</features>
