@@ -1,5 +1,9 @@
 package com.nexgen.sb.creditrisk.service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -17,6 +21,8 @@ import com.nexgen.esb.creditrisk.service.CreditRiskServiceException;
 public class CreditRiskOrchestrationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(CreditRiskOrchestrationService.class);
+    private static final DateTimeFormatter TIMESTAMP_FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     public CreditRiskResType processRequest(CreditRiskReqType request, String channel)
             throws CreditRiskServiceException {
@@ -35,9 +41,8 @@ public class CreditRiskOrchestrationService {
         ResponseHeader responseHeader = new ResponseHeader();
         responseHeader.setTransactionId(request.getRequestHeader() != null
                 ? request.getRequestHeader().getTransactionId()
-                : java.util.UUID.randomUUID().toString());
-        responseHeader.setTimestamp(
-                new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(new java.util.Date()));
+                : UUID.randomUUID().toString());
+        responseHeader.setTimestamp(LocalDateTime.now().format(TIMESTAMP_FORMATTER));
         responseHeader.setStatusCode("SUCCESS");
         responseHeader.setStatusMessage("Credit risk assessment completed");
 

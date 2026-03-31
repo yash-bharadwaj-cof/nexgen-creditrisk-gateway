@@ -1,5 +1,9 @@
 package com.nexgen.sb.creditrisk.service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -16,6 +20,8 @@ import com.nexgen.esb.creditrisk.model.RequestHeader;
 public class GatewayPreProcessService {
 
     private static final Logger LOG = LoggerFactory.getLogger(GatewayPreProcessService.class);
+    private static final DateTimeFormatter TIMESTAMP_FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     public CreditRiskReqType preProcess(CreditRiskReqType request) {
         if (request == null) {
@@ -25,9 +31,8 @@ public class GatewayPreProcessService {
         if (request.getRequestHeader() == null) {
             RequestHeader header = new RequestHeader();
             header.setSourceSystem("GATEWAY");
-            header.setTimestamp(
-                    new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(new java.util.Date()));
-            header.setTransactionId(java.util.UUID.randomUUID().toString());
+            header.setTimestamp(LocalDateTime.now().format(TIMESTAMP_FORMATTER));
+            header.setTransactionId(UUID.randomUUID().toString());
             request.setRequestHeader(header);
         }
 
