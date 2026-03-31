@@ -1,0 +1,14 @@
+spring:
+  data:
+    mongodb:
+      uri: ${MONGO_URI}
+
+nexgen:
+  bureau:
+    stub-enabled: false
+    endpoint-url: ${BUREAU_ENDPOINT_URL}
+
+logging:
+  level:
+    com.nexgen.sb: WARN
+    root: INFO
