@@ -59,7 +59,7 @@ public class BureauRequestBuilder implements Processor {
         // Store for later reference
         exchange.setProperty("BUREAU_REQUEST_ID", requestId);
 
-        Message outMessage = exchange.getOut();
+        Message outMessage = exchange.getMessage();
         outMessage.setBody(bureauRequest);
         outMessage.setHeader("operationName", "inquire");
         outMessage.setHeader("operationNamespace", "http://ws.esb.nexgen.com/bureau/v1");

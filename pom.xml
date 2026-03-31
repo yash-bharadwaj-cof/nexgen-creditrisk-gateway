@@ -12,7 +12,7 @@
     <description>Credit risk scoring gateway exposing SOAP and REST endpoints with external credit bureau integration</description>
 
     <properties>
-        <camel.version>2.25.4</camel.version>
+        <camel.version>3.22.3</camel.version>
         <cxf.version>3.5.9</cxf.version>
         <spring.version>5.3.39</spring.version>
         <version.maven-bundle-plugin>3.2.0</version.maven-bundle-plugin>
@@ -30,12 +30,12 @@
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-blueprint</artifactId>
+            <artifactId>camel-cxf-soap</artifactId>
             <version>${camel.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-cxf</artifactId>
+            <artifactId>camel-cxf-rest</artifactId>
             <version>${camel.version}</version>
         </dependency>
         <dependency>
@@ -154,12 +154,6 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-test-blueprint</artifactId>
-            <version>${camel.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
