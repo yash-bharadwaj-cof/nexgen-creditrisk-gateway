@@ -1,6 +1,6 @@
 package com.nexgen.esb.creditrisk.model;
 
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class IncomeVerificationDetail {

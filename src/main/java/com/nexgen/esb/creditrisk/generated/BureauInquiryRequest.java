@@ -1,6 +1,6 @@
 package com.nexgen.esb.creditrisk.generated;
 
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
 
 /**
  * Represents the outbound request to the external credit bureau SOAP service.

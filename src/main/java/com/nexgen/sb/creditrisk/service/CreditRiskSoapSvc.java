@@ -1,4 +1,4 @@
-package com.nexgen.esb.creditrisk.service;
+package com.nexgen.sb.creditrisk.service;
 
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
@@ -7,6 +7,7 @@ import jakarta.jws.WebService;
 
 import com.nexgen.esb.creditrisk.model.CreditRiskReqType;
 import com.nexgen.esb.creditrisk.model.CreditRiskResType;
+import com.nexgen.esb.creditrisk.service.CreditRiskServiceException;
 
 @WebService(name = "CreditRiskSoapSvc",
             targetNamespace = "http://ws.esb.nexgen.com/schema/creditrisk/v1")

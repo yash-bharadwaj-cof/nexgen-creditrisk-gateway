@@ -1,6 +1,6 @@
 package com.nexgen.esb.creditrisk.service;
 
-import javax.jws.WebService;
+import jakarta.jws.WebService;
 
 import com.nexgen.esb.creditrisk.model.CreditRiskReqType;
 import com.nexgen.esb.creditrisk.model.CreditRiskResType;

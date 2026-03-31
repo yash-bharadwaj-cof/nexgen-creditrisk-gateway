@@ -1,7 +1,7 @@
 package com.nexgen.esb.creditrisk.service;
 
-import javax.xml.bind.annotation.*;
-import javax.xml.ws.WebFault;
+import jakarta.xml.bind.annotation.*;
+import jakarta.xml.ws.WebFault;
 
 @WebFault(name = "CreditRiskServiceException",
           targetNamespace = "http://ws.esb.nexgen.com/schema/creditrisk/v1")
