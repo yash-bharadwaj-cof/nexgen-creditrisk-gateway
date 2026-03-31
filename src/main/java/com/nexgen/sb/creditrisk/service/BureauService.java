@@ -1,7 +1,7 @@
 package com.nexgen.sb.creditrisk.service;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -28,8 +28,8 @@ import com.nexgen.sb.creditrisk.config.BureauProperties;
 public class BureauService {
 
     private static final Logger LOG = LoggerFactory.getLogger(BureauService.class);
-    private static final SimpleDateFormat TIMESTAMP_FORMAT =
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    private static final DateTimeFormatter TIMESTAMP_FORMAT =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
     private final BureauProperties properties;
 
@@ -60,7 +60,7 @@ public class BureauService {
         bureauReq.setSubject(subject);
 
         bureauReq.setRequestId(properties.getRequestIdPrefix() + UUID.randomUUID().toString());
-        bureauReq.setTimestamp(TIMESTAMP_FORMAT.format(new Date()));
+        bureauReq.setTimestamp(ZonedDateTime.now().format(TIMESTAMP_FORMAT));
         bureauReq.setProductType(request.getProductType());
 
         LOG.info("Bureau request built with requestId: {}", bureauReq.getRequestId());
@@ -109,7 +109,8 @@ public class BureauService {
         creditDetail.setTotalCreditLimit(response.getTotalCreditLimit());
         creditDetail.setTotalBalance(response.getTotalBalance());
 
-        if (response.getTotalCreditLimit() != null && response.getTotalCreditLimit() > 0) {
+        if (response.getTotalCreditLimit() != null && response.getTotalCreditLimit() > 0
+                && response.getTotalBalance() != null) {
             creditDetail.setUtilizationRate(
                     response.getTotalBalance() / response.getTotalCreditLimit());
         } else {
