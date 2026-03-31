@@ -12,9 +12,9 @@
     <description>Credit risk scoring gateway exposing SOAP and REST endpoints with external credit bureau integration</description>
 
     <properties>
-        <camel.version>2.17.0</camel.version>
-        <cxf.version>3.1.5</cxf.version>
-        <slf4j.version>1.7.25</slf4j.version>
+        <camel.version>2.25.4</camel.version>
+        <cxf.version>3.3.12</cxf.version>
+        <slf4j.version>1.7.36</slf4j.version>
         <version.maven-bundle-plugin>3.2.0</version.maven-bundle-plugin>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -128,21 +128,16 @@
             <version>5.3.39</version>
         </dependency>
 
-        <!-- Logging -->
+        <!-- Logging — Logback replaces EOL Log4j 1.x (multiple unpatched CVEs) -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.13</version>
         </dependency>
 
         <!-- Commons -->
