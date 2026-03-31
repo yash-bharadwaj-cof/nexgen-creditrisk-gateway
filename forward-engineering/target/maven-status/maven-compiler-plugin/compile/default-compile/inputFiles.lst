@@ -1,7 +1,0 @@
-/home/runner/work/nexgen-creditrisk-gateway/nexgen-creditrisk-gateway/forward-engineering/src/main/java/com/nexgen/sb/creditrisk/scoring/AggressiveScoringStrategy.java
-/home/runner/work/nexgen-creditrisk-gateway/nexgen-creditrisk-gateway/forward-engineering/src/main/java/com/nexgen/sb/creditrisk/scoring/StandardScoringStrategy.java
-/home/runner/work/nexgen-creditrisk-gateway/nexgen-creditrisk-gateway/forward-engineering/src/main/java/com/nexgen/sb/creditrisk/config/ScoringProperties.java
-/home/runner/work/nexgen-creditrisk-gateway/nexgen-creditrisk-gateway/forward-engineering/src/main/java/com/nexgen/sb/creditrisk/scoring/ConservativeScoringStrategy.java
-/home/runner/work/nexgen-creditrisk-gateway/nexgen-creditrisk-gateway/forward-engineering/src/main/java/com/nexgen/sb/creditrisk/scoring/ScoringStrategy.java
-/home/runner/work/nexgen-creditrisk-gateway/nexgen-creditrisk-gateway/forward-engineering/src/main/java/com/nexgen/sb/creditrisk/service/ScoringStrategyService.java
-/home/runner/work/nexgen-creditrisk-gateway/nexgen-creditrisk-gateway/forward-engineering/src/main/java/com/nexgen/sb/creditrisk/model/CreditRiskReqType.java

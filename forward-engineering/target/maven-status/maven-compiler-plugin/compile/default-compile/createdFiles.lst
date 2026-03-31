@@ -1,8 +1,0 @@
-com/nexgen/sb/creditrisk/scoring/AggressiveScoringStrategy.class
-com/nexgen/sb/creditrisk/config/ScoringProperties.class
-com/nexgen/sb/creditrisk/service/ScoringStrategyService.class
-META-INF/spring-configuration-metadata.json
-com/nexgen/sb/creditrisk/scoring/ScoringStrategy.class
-com/nexgen/sb/creditrisk/scoring/ConservativeScoringStrategy.class
-com/nexgen/sb/creditrisk/model/CreditRiskReqType.class
-com/nexgen/sb/creditrisk/scoring/StandardScoringStrategy.class
