@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="nexgen-creditrisk-gateway-1.0.0-SNAPSHOT"
+          xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
+    <feature name="nexgen-creditrisk-gateway" version="1.0.0-SNAPSHOT" resolver="(obr)">
+        <bundle>mvn:com.nexgen.esb/nexgen-creditrisk-gateway/1.0.0-SNAPSHOT</bundle>
+    </feature>
+</features>
