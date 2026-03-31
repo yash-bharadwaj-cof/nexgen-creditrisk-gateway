@@ -3,26 +3,27 @@ package com.nexgen.sb.creditrisk.service;
 import com.nexgen.esb.creditrisk.model.CreditScoreDetail;
 
 /**
- * Wrapper returned by {@link BureauService#mapResponse} carrying either the
- * successfully mapped {@link CreditScoreDetail} or error information when the
- * bureau call failed.
+ * Holds the result of a credit bureau inquiry, combining the mapped
+ * {@link CreditScoreDetail} and a flag indicating whether the bureau
+ * returned an error.
  */
 public class BureauResult {
 
     private final CreditScoreDetail creditDetail;
     private final boolean hasError;
-    private final String errorCode;
-    private final String errorMessage;
 
-    public BureauResult(CreditScoreDetail creditDetail, boolean hasError, String errorCode, String errorMessage) {
+    public BureauResult(CreditScoreDetail creditDetail, boolean hasError) {
         this.creditDetail = creditDetail;
         this.hasError = hasError;
-        this.errorCode = errorCode;
-        this.errorMessage = errorMessage;
     }
 
-    public CreditScoreDetail creditDetail() { return creditDetail; }
-    public boolean hasError() { return hasError; }
-    public String errorCode() { return errorCode; }
-    public String errorMessage() { return errorMessage; }
+    /** The mapped credit score details from the bureau response, or {@code null} when {@link #hasError()} is true. */
+    public CreditScoreDetail creditDetail() {
+        return creditDetail;
+    }
+
+    /** Returns {@code true} if the bureau call failed or returned an error response. */
+    public boolean hasError() {
+        return hasError;
+    }
 }

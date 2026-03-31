@@ -1,8 +1,8 @@
 package com.nexgen.sb.creditrisk.service;
 
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,42 +18,40 @@ import com.nexgen.esb.creditrisk.model.EmploymentRiskDetail;
 import com.nexgen.esb.creditrisk.model.IncomeVerificationDetail;
 import com.nexgen.esb.creditrisk.model.ResponseHeader;
 import com.nexgen.esb.creditrisk.scoring.ScoringStrategy;
+import com.nexgen.esb.creditrisk.scoring.StandardScoringStrategy;
 
 /**
- * Spring service that performs credit risk calculation.
- * Migrated from the legacy RiskScoreCalculator Camel Processor.
- * Accepts method parameters instead of reading from a Camel Exchange,
- * and returns CreditRiskResType directly.
+ * Applies the selected scoring strategy to produce the final credit risk assessment.
+ * Migrated from legacy {@code RiskScoreCalculator} Camel Processor.
  */
 @Service
 public class RiskCalculationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(RiskCalculationService.class);
-    private static final DateTimeFormatter TIMESTAMP_FORMAT =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    private static final SimpleDateFormat TIMESTAMP_FORMAT =
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    private static final ScoringStrategy STANDARD_STRATEGY = new StandardScoringStrategy();
 
     /**
-     * Calculates the full credit risk response from bureau data, applicant data
-     * and a scoring strategy.
+     * Calculates the credit risk assessment result.
      *
      * @param request      validated credit risk request
-     * @param creditDetail credit score detail retrieved from the bureau
-     * @param strategy     scoring strategy to apply
-     * @param bureauError  {@code true} when the bureau lookup failed
+     * @param creditDetail bureau credit score details (may be {@code null} when {@code bureauError} is true)
+     * @param strategy     scoring strategy resolved for this request
+     * @param bureauError  {@code true} if the bureau call failed or returned an error
      * @return populated {@link CreditRiskResType}
      */
     public CreditRiskResType calculate(CreditRiskReqType request,
                                        CreditScoreDetail creditDetail,
                                        ScoringStrategy strategy,
                                        boolean bureauError) {
-
         CreditRiskResType response = new CreditRiskResType();
 
-        // Build response header
         ResponseHeader header = new ResponseHeader();
-        header.setTransactionId(request.getRequestHeader() != null ?
-                request.getRequestHeader().getTransactionId() : UUID.randomUUID().toString());
-        header.setTimestamp(ZonedDateTime.now().format(TIMESTAMP_FORMAT));
+        header.setTransactionId(request.getRequestHeader() != null
+                ? request.getRequestHeader().getTransactionId()
+                : UUID.randomUUID().toString());
+        header.setTimestamp(TIMESTAMP_FORMAT.format(new Date()));
 
         response.setResponseHeader(header);
         response.setApplicantId(request.getApplicantId());
@@ -72,22 +70,21 @@ public class RiskCalculationService {
 
             response.setCreditScoreDetail(creditDetail);
 
-            // Calculate income verification
             IncomeVerificationDetail incomeDetail = buildIncomeVerification(request, creditDetail);
             response.setIncomeVerification(incomeDetail);
 
-            // Calculate employment risk
             EmploymentRiskDetail empDetail = buildEmploymentRisk(request);
             response.setEmploymentRisk(empDetail);
 
-            // Calculate debt service
-            DebtServiceDetail debtDetail = buildDebtService(request, creditDetail, strategy);
+            DebtServiceDetail debtDetail = buildDebtService(request, creditDetail);
             response.setDebtService(debtDetail);
 
-            // Apply strategy for risk categorization
-            double dti = incomeDetail.getDebtToIncomeRatio() != null ? incomeDetail.getDebtToIncomeRatio() : 0.5;
-            double utilRate = creditDetail.getUtilizationRate() != null ? creditDetail.getUtilizationRate() : 0.5;
-            int bureauScore = creditDetail.getBureauScore() != null ? creditDetail.getBureauScore() : 0;
+            double dti = incomeDetail.getDebtToIncomeRatio() != null
+                    ? incomeDetail.getDebtToIncomeRatio() : 0.5;
+            double utilRate = creditDetail.getUtilizationRate() != null
+                    ? creditDetail.getUtilizationRate() : 0.5;
+            int bureauScore = creditDetail.getBureauScore() != null
+                    ? creditDetail.getBureauScore() : 0;
 
             String riskCategory = strategy.categorizeRisk(bureauScore, dti, utilRate);
             response.setRiskCategory(riskCategory);
@@ -96,21 +93,19 @@ public class RiskCalculationService {
                     bureauScore, dti, utilRate, request.getEmploymentStatus());
             response.setOverallScore(overallScore);
 
-            double requestedAmt = request.getRequestedAmount() != null ? request.getRequestedAmount() : 0.0;
-            double annualIncome = request.getAnnualIncome() != null ? request.getAnnualIncome() : 0.0;
+            double requestedAmt = request.getRequestedAmount() != null
+                    ? request.getRequestedAmount() : 0.0;
+            double annualIncome = request.getAnnualIncome() != null
+                    ? request.getAnnualIncome() : 0.0;
             String recommendation = strategy.determineRecommendation(riskCategory, requestedAmt, annualIncome);
             response.setRecommendation(recommendation);
 
-            // Identify risk factors
-            List<String> riskFactors = identifyRiskFactors(creditDetail, incomeDetail, request);
-            response.setRiskFactors(riskFactors);
-
+            response.setRiskFactors(identifyRiskFactors(creditDetail, incomeDetail, request));
             response.setAccuracyCode("FD");
         }
 
         LOG.info("Risk assessment completed. Category: {}, Score: {}, Recommendation: {}",
                 response.getRiskCategory(), response.getOverallScore(), response.getRecommendation());
-
         return response;
     }
 
@@ -122,10 +117,11 @@ public class RiskCalculationService {
         detail.setVerificationStatus("SELF_REPORTED");
         detail.setIncomeSource(request.getEmploymentStatus());
 
-        double monthlyIncome = request.getAnnualIncome() != null ? request.getAnnualIncome() / 12.0 : 0.0;
-        double monthlyDebt = creditDetail.getTotalBalance() != null ? creditDetail.getTotalBalance() * 0.03 : 0.0;
+        double monthlyIncome = request.getAnnualIncome() != null
+                ? request.getAnnualIncome() / 12.0 : 0.0;
+        double monthlyDebt = creditDetail.getTotalBalance() != null
+                ? creditDetail.getTotalBalance() * 0.03 : 0.0;
         detail.setDebtToIncomeRatio(monthlyIncome > 0 ? monthlyDebt / monthlyIncome : 1.0);
-
         return detail;
     }
 
@@ -143,26 +139,27 @@ public class RiskCalculationService {
         } else {
             detail.setRiskLevel("HIGH");
         }
-
         return detail;
     }
 
-    private DebtServiceDetail buildDebtService(CreditRiskReqType request,
-                                                CreditScoreDetail creditDetail,
-                                                ScoringStrategy strategy) {
+    private DebtServiceDetail buildDebtService(CreditRiskReqType request, CreditScoreDetail creditDetail) {
         DebtServiceDetail detail = new DebtServiceDetail();
-        double monthlyIncome = request.getAnnualIncome() != null ? request.getAnnualIncome() / 12.0 : 0.0;
-        double monthlyDebt = creditDetail.getTotalBalance() != null ? creditDetail.getTotalBalance() * 0.03 : 0.0;
+        double monthlyIncome = request.getAnnualIncome() != null
+                ? request.getAnnualIncome() / 12.0 : 0.0;
+        double monthlyDebt = creditDetail.getTotalBalance() != null
+                ? creditDetail.getTotalBalance() * 0.03 : 0.0;
 
         detail.setTotalMonthlyIncome(monthlyIncome);
         detail.setTotalMonthlyDebt(monthlyDebt);
         detail.setDebtServiceRatio(monthlyIncome > 0 ? monthlyDebt / monthlyIncome : 1.0);
 
-        double requestMonthly = request.getRequestedAmount() != null ? request.getRequestedAmount() * 0.006 : 0.0;
-        detail.setTotalDebtServiceRatio(monthlyIncome > 0 ? (monthlyDebt + requestMonthly) / monthlyIncome : 1.0);
+        double requestMonthly = request.getRequestedAmount() != null
+                ? request.getRequestedAmount() * 0.006 : 0.0;
+        detail.setTotalDebtServiceRatio(
+                monthlyIncome > 0 ? (monthlyDebt + requestMonthly) / monthlyIncome : 1.0);
 
-        detail.setAffordabilityRating(strategy.determineAffordabilityRating(detail.getTotalDebtServiceRatio()));
-
+        detail.setAffordabilityRating(
+                STANDARD_STRATEGY.determineAffordabilityRating(detail.getTotalDebtServiceRatio()));
         return detail;
     }
 
@@ -170,7 +167,6 @@ public class RiskCalculationService {
                                               IncomeVerificationDetail incomeDetail,
                                               CreditRiskReqType request) {
         List<String> factors = new ArrayList<>();
-
         if (creditDetail.getBureauScore() != null && creditDetail.getBureauScore() < 650) {
             factors.add("LOW_CREDIT_SCORE");
         }
@@ -189,7 +185,6 @@ public class RiskCalculationService {
         if ("UNEMPLOYED".equalsIgnoreCase(request.getEmploymentStatus())) {
             factors.add("NO_EMPLOYMENT_INCOME");
         }
-
         return factors;
     }
 }

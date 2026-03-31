@@ -11,14 +11,18 @@ import com.nexgen.sb.creditrisk.exception.ValidationException;
 
 /**
  * Validates incoming credit risk assessment requests.
- * Business Rules:
- * - CR-001: ApplicantId required
- * - CR-002: FirstName required
- * - CR-003: LastName required
- * - CR-004: DateOfBirth required and format validated (YYYY-MM-DD)
- * - CR-005: SocialInsuranceNumber required and format validated (NNN-NNN-NNN)
- * - CR-006: Province must be valid Canadian province code
- * - CR-007: PostalCode must match Canadian format
+ * Migrated from legacy {@code CreditRiskRequestValidator} Camel Processor.
+ *
+ * Business rules enforced:
+ * <ul>
+ *   <li>CR-001: ApplicantId required</li>
+ *   <li>CR-002: FirstName required</li>
+ *   <li>CR-003: LastName required</li>
+ *   <li>CR-004: DateOfBirth required and in YYYY-MM-DD format</li>
+ *   <li>CR-005: SocialInsuranceNumber required and in NNN-NNN-NNN format</li>
+ *   <li>CR-006: Province must be a valid Canadian province code</li>
+ *   <li>CR-007: PostalCode format validated when present</li>
+ * </ul>
  */
 @Service
 public class ValidationService {
@@ -30,13 +34,13 @@ public class ValidationService {
     private static final String POSTAL_CODE_PATTERN = "^[A-Za-z]\\d[A-Za-z]\\s?\\d[A-Za-z]\\d$";
 
     /**
-     * Validates the credit risk request against all business rules.
+     * Validates the given request, throwing {@link ValidationException} on the first
+     * rule violation found.
      *
      * @param request the credit risk request to validate
-     * @return the validated request (same object)
-     * @throws ValidationException if any validation rule is violated
+     * @throws ValidationException if any required field is missing or malformed
      */
-    public CreditRiskReqType validate(CreditRiskReqType request) {
+    public void validate(CreditRiskReqType request) {
         if (request == null) {
             throw new ValidationException("CR-000", "Request body is null or empty");
         }
@@ -77,12 +81,11 @@ public class ValidationService {
             }
         }
 
-        if (StringUtils.isNotBlank(request.getPostalCode()) &&
-                !request.getPostalCode().matches(POSTAL_CODE_PATTERN)) {
+        if (StringUtils.isNotBlank(request.getPostalCode())
+                && !request.getPostalCode().matches(POSTAL_CODE_PATTERN)) {
             throw new ValidationException("CR-007", "Invalid postal code format");
         }
 
         LOG.info("Credit risk request validated successfully for applicant: {}", request.getApplicantId());
-        return request;
     }
 }
