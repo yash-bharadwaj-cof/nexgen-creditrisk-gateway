@@ -1,0 +1,10 @@
+com/nexgen/esb/creditrisk/service/CreditRiskRestSvcTest.class
+com/nexgen/esb/creditrisk/scoring/ConservativeScoringStrategyTest.class
+com/nexgen/esb/creditrisk/processor/ScoringStrategyProcessorTest.class
+com/nexgen/esb/creditrisk/scoring/AggressiveScoringStrategyTest.class
+com/nexgen/esb/creditrisk/processor/BureauResponseMapperTest.class
+com/nexgen/esb/creditrisk/processor/BureauRequestBuilderTest.class
+com/nexgen/esb/creditrisk/processor/RiskScoreCalculatorTest.class
+com/nexgen/esb/creditrisk/logging/TransactionLoggerTest.class
+com/nexgen/esb/creditrisk/scoring/StandardScoringStrategyTest.class
+com/nexgen/esb/creditrisk/processor/CreditRiskRequestValidatorTest.class

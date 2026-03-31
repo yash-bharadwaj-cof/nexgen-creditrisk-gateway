@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.nexgen.esb.creditrisk.scoring.ConservativeScoringStrategyTest
+-------------------------------------------------------------------------------
+Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s - in com.nexgen.esb.creditrisk.scoring.ConservativeScoringStrategyTest
