@@ -1,0 +1,10 @@
+com/nexgen/sb/creditrisk/logging/package-info.class
+com/nexgen/sb/creditrisk/model/package-info.class
+com/nexgen/sb/creditrisk/generated/package-info.class
+com/nexgen/sb/creditrisk/service/package-info.class
+com/nexgen/sb/creditrisk/exception/package-info.class
+com/nexgen/sb/creditrisk/endpoint/package-info.class
+com/nexgen/sb/creditrisk/CreditRiskApplication.class
+com/nexgen/sb/creditrisk/config/package-info.class
+com/nexgen/sb/creditrisk/scoring/package-info.class
+com/nexgen/sb/creditrisk/controller/package-info.class
