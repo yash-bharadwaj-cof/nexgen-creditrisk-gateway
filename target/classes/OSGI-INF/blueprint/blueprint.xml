@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:cxf="http://camel.apache.org/schema/blueprint/cxf"
+           xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs"
+           xmlns:jaxws="http://cxf.apache.org/blueprint/jaxws"
+           xmlns:camel="http://camel.apache.org/schema/blueprint"
+           xsi:schemaLocation="
+               http://www.osgi.org/xmlns/blueprint/v1.0.0 https://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+               http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd
+               http://cxf.apache.org/blueprint/jaxrs http://cxf.apache.org/schemas/blueprint/jaxrs.xsd
+               http://cxf.apache.org/blueprint/jaxws http://cxf.apache.org/schemas/blueprint/jaxws.xsd">
+
+    <!-- ==================== Property Configuration ==================== -->
+    <camel:propertyPlaceholder id="properties"
+                               location="file:${NEXGEN_CONFIG_PATH}/creditrisk/app_config.properties"
+                               ignoreMissingLocation="true"/>
+
+    <!-- ==================== Service Beans ==================== -->
+    <bean id="creditRiskRestService" class="com.nexgen.esb.creditrisk.service.CreditRiskRestSvc"/>
+    <bean id="creditRiskSoapService" class="com.nexgen.esb.creditrisk.service.CreditRiskSoapSvcImpl"/>
+
+    <!-- ==================== Processor Beans ==================== -->
+    <bean id="requestValidator" class="com.nexgen.esb.creditrisk.processor.CreditRiskRequestValidator"/>
+
+    <bean id="scoringStrategyProcessor" class="com.nexgen.esb.creditrisk.processor.ScoringStrategyProcessor">
+        <property name="defaultStrategy" value="{{SCORING_DEFAULT_STRATEGY}}"/>
+    </bean>
+
+    <bean id="bureauRequestBuilder" class="com.nexgen.esb.creditrisk.processor.BureauRequestBuilder">
+        <property name="requestIdPrefix" value="{{BUREAU_REQUEST_ID_PREFIX}}"/>
+        <property name="subscriberCode" value="{{BUREAU_SUBSCRIBER_CODE}}"/>
+        <property name="subscriberName" value="{{BUREAU_SUBSCRIBER_NAME}}"/>
+    </bean>
+
+    <bean id="bureauResponseMapper" class="com.nexgen.esb.creditrisk.processor.BureauResponseMapper"/>
+
+    <bean id="riskScoreCalculator" class="com.nexgen.esb.creditrisk.processor.RiskScoreCalculator">
+        <property name="scoringStrategy" value="{{SCORING_DEFAULT_STRATEGY}}"/>
+    </bean>
+
+    <bean id="gwRequestPreProcessor" class="com.nexgen.esb.creditrisk.processor.GatewayRequestPreProcessor"/>
+
+    <bean id="restResponseBuilder" class="com.nexgen.esb.creditrisk.processor.RestResponseBuilder"/>
+
+    <bean id="errorProcessor" class="com.nexgen.esb.creditrisk.processor.ErrorProcessor"/>
+
+    <bean id="transactionLogger" class="com.nexgen.esb.creditrisk.logging.TransactionLogger">
+        <property name="mongoHost" value="{{MONGO_HOST}}"/>
+        <property name="mongoPort" value="{{MONGO_PORT}}"/>
+        <property name="mongoDb" value="{{MONGO_DB}}"/>
+        <property name="mongoCollection" value="{{MONGO_COLLECTION}}"/>
+    </bean>
+
+    <!-- ==================== CXF REST Endpoint ==================== -->
+    <jaxrs:server id="creditRiskRestEndpoint"
+                  address="/service/rest/creditrisk">
+        <jaxrs:serviceBeans>
+            <ref component-id="creditRiskRestService"/>
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+            <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider"/>
+        </jaxrs:providers>
+    </jaxrs:server>
+
+    <!-- ==================== CXF SOAP Endpoints ==================== -->
+    <cxf:cxfEndpoint id="creditRiskSoapEndpoint"
+                     address="/service/soap/creditrisk"
+                     serviceClass="com.nexgen.esb.creditrisk.service.CreditRiskSoapSvc"
+                     wsdlURL="classpath:wsdl/CreditRiskService.wsdl">
+        <cxf:properties>
+            <entry key="schema-validation-enabled" value="true"/>
+        </cxf:properties>
+        <cxf:inInterceptors>
+            <bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+                <argument>
+                    <map>
+                        <entry key="action" value="UsernameToken"/>
+                        <entry key="passwordType" value="PasswordText"/>
+                    </map>
+                </argument>
+            </bean>
+        </cxf:inInterceptors>
+    </cxf:cxfEndpoint>
+
+    <!-- Gateway SOAP Endpoint (for Guidewire-type integration) -->
+    <cxf:cxfEndpoint id="creditRiskGwEndpoint"
+                     address="/service/creditriskapi"
+                     serviceClass="com.nexgen.esb.creditrisk.service.CreditRiskSoapSvc"
+                     wsdlURL="classpath:wsdl/CreditRiskService.wsdl">
+        <cxf:properties>
+            <entry key="schema-validation-enabled" value="true"/>
+        </cxf:properties>
+        <cxf:inInterceptors>
+            <bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+                <argument>
+                    <map>
+                        <entry key="action" value="UsernameToken"/>
+                        <entry key="passwordType" value="PasswordText"/>
+                    </map>
+                </argument>
+            </bean>
+        </cxf:inInterceptors>
+    </cxf:cxfEndpoint>
+
+    <!-- ==================== External Bureau CXF Client ==================== -->
+    <cxf:cxfEndpoint id="bureauEndpoint"
+                     address="{{BUREAU_ENDPOINT_URL}}"
+                     serviceClass="com.nexgen.esb.creditrisk.generated.BureauScoreService"
+                     wsdlURL="classpath:wsdl/ExternalBureauService.wsdl">
+        <cxf:properties>
+            <entry key="schema-validation-enabled" value="false"/>
+        </cxf:properties>
+    </cxf:cxfEndpoint>
+
+    <!-- ==================== Camel Context ==================== -->
+    <camelContext id="creditRiskGatewayContext" xmlns="http://camel.apache.org/schema/blueprint">
+
+        <!-- ===== Route 1: REST Endpoint ===== -->
+        <route id="in_rest_creditRiskRouter">
+            <from uri="jaxrs:bean:creditRiskRestEndpoint"/>
+            <log message="REST CreditRisk Request received"/>
+            <doTry>
+                <process ref="requestValidator"/>
+                <process ref="scoringStrategyProcessor"/>
+                <process ref="bureauRequestBuilder"/>
+                <to uri="cxf:bean:bureauEndpoint"/>
+                <process ref="bureauResponseMapper"/>
+                <process ref="riskScoreCalculator"/>
+                <process ref="restResponseBuilder"/>
+                <wireTap uri="direct:logTransaction"/>
+                <doCatch>
+                    <exception>java.lang.Exception</exception>
+                    <process ref="errorProcessor"/>
+                </doCatch>
+            </doTry>
+        </route>
+
+        <!-- ===== Route 2: SOAP Endpoint (Connectivity) ===== -->
+        <route id="in_soap_creditRiskRouter">
+            <from uri="cxf:bean:creditRiskSoapEndpoint"/>
+            <log message="SOAP CreditRisk Request received"/>
+            <doTry>
+                <process ref="requestValidator"/>
+                <process ref="scoringStrategyProcessor"/>
+                <process ref="bureauRequestBuilder"/>
+                <to uri="cxf:bean:bureauEndpoint"/>
+                <process ref="bureauResponseMapper"/>
+                <process ref="riskScoreCalculator"/>
+                <wireTap uri="direct:logTransaction"/>
+                <doCatch>
+                    <exception>java.lang.Exception</exception>
+                    <process ref="errorProcessor"/>
+                </doCatch>
+            </doTry>
+        </route>
+
+        <!-- ===== Route 3: Gateway SOAP Endpoint ===== -->
+        <route id="in_gw_creditRiskRouter">
+            <from uri="cxf:bean:creditRiskGwEndpoint"/>
+            <log message="GW CreditRisk Request received"/>
+            <doTry>
+                <process ref="gwRequestPreProcessor"/>
+                <process ref="requestValidator"/>
+                <process ref="scoringStrategyProcessor"/>
+                <process ref="bureauRequestBuilder"/>
+                <to uri="cxf:bean:bureauEndpoint"/>
+                <process ref="bureauResponseMapper"/>
+                <process ref="riskScoreCalculator"/>
+                <wireTap uri="direct:logTransaction"/>
+                <doCatch>
+                    <exception>java.lang.Exception</exception>
+                    <process ref="errorProcessor"/>
+                </doCatch>
+            </doTry>
+        </route>
+
+        <!-- ===== Route 4: Transaction Logging ===== -->
+        <route id="creditRisk_logging_route">
+            <from uri="direct:logTransaction"/>
+            <bean ref="transactionLogger" method="logTransaction"/>
+        </route>
+
+    </camelContext>
+
+</blueprint>
