@@ -1,0 +1,6 @@
+com/nexgen/sb/creditrisk/config/ScoringProperties.class
+META-INF/spring-configuration-metadata.json
+com/nexgen/sb/creditrisk/NexgenCreditRiskApplication.class
+com/nexgen/sb/creditrisk/config/NexgenProperties.class
+com/nexgen/sb/creditrisk/config/NexgenProperties$MongoProps.class
+com/nexgen/sb/creditrisk/config/BureauProperties.class

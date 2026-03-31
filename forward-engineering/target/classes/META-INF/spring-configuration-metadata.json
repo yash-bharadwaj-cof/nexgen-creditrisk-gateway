@@ -1,0 +1,84 @@
+{
+  "groups": [
+    {
+      "name": "nexgen",
+      "type": "com.nexgen.sb.creditrisk.config.NexgenProperties",
+      "sourceType": "com.nexgen.sb.creditrisk.config.NexgenProperties"
+    },
+    {
+      "name": "nexgen.bureau",
+      "type": "com.nexgen.sb.creditrisk.config.BureauProperties",
+      "sourceType": "com.nexgen.sb.creditrisk.config.BureauProperties"
+    },
+    {
+      "name": "nexgen.mongo",
+      "type": "com.nexgen.sb.creditrisk.config.NexgenProperties$MongoProps",
+      "sourceType": "com.nexgen.sb.creditrisk.config.NexgenProperties",
+      "sourceMethod": "getMongo()"
+    },
+    {
+      "name": "nexgen.scoring",
+      "type": "com.nexgen.sb.creditrisk.config.ScoringProperties",
+      "sourceType": "com.nexgen.sb.creditrisk.config.ScoringProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "nexgen.bureau.connection-timeout",
+      "type": "java.lang.Integer",
+      "sourceType": "com.nexgen.sb.creditrisk.config.BureauProperties",
+      "defaultValue": 30000
+    },
+    {
+      "name": "nexgen.bureau.endpoint-url",
+      "type": "java.lang.String",
+      "sourceType": "com.nexgen.sb.creditrisk.config.BureauProperties"
+    },
+    {
+      "name": "nexgen.bureau.receive-timeout",
+      "type": "java.lang.Integer",
+      "sourceType": "com.nexgen.sb.creditrisk.config.BureauProperties",
+      "defaultValue": 30000
+    },
+    {
+      "name": "nexgen.bureau.request-id-prefix",
+      "type": "java.lang.String",
+      "sourceType": "com.nexgen.sb.creditrisk.config.BureauProperties"
+    },
+    {
+      "name": "nexgen.bureau.stub-enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.nexgen.sb.creditrisk.config.BureauProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "nexgen.bureau.subscriber-code",
+      "type": "java.lang.String",
+      "sourceType": "com.nexgen.sb.creditrisk.config.BureauProperties"
+    },
+    {
+      "name": "nexgen.bureau.subscriber-name",
+      "type": "java.lang.String",
+      "sourceType": "com.nexgen.sb.creditrisk.config.BureauProperties"
+    },
+    {
+      "name": "nexgen.mongo.collection",
+      "type": "java.lang.String",
+      "sourceType": "com.nexgen.sb.creditrisk.config.NexgenProperties$MongoProps",
+      "defaultValue": "transactions"
+    },
+    {
+      "name": "nexgen.scoring.default-strategy",
+      "type": "java.lang.String",
+      "sourceType": "com.nexgen.sb.creditrisk.config.ScoringProperties",
+      "defaultValue": "standard"
+    },
+    {
+      "name": "nexgen.supported-provinces",
+      "type": "java.lang.String",
+      "sourceType": "com.nexgen.sb.creditrisk.config.NexgenProperties",
+      "defaultValue": "ON,BC,AB,QC"
+    }
+  ],
+  "hints": []
+}

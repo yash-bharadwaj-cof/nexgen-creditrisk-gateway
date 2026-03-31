@@ -80,8 +80,6 @@
             <artifactId>cxf-rt-ws-security</artifactId>
             <version>4.0.5</version>
             <exclusions>
-                <!-- OpenSAML artifacts require the Shibboleth repository;
-                     exclude to avoid build-time resolution failures. -->
                 <exclusion>
                     <groupId>org.opensaml</groupId>
                     <artifactId>opensaml-saml-impl</artifactId>
@@ -109,6 +107,13 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.14.0</version>
+        </dependency>
+
+        <!-- Configuration Processor (for @ConfigurationProperties metadata) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- Test -->
