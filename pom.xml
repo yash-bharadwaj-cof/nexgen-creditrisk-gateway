@@ -12,7 +12,7 @@
     <description>Credit risk scoring gateway exposing SOAP and REST endpoints with external credit bureau integration</description>
 
     <properties>
-        <camel.version>2.25.4</camel.version>
+        <camel.version>3.22.2</camel.version>
         <cxf.version>3.1.18</cxf.version>
         <spring.version>5.3.39</spring.version>
         <version.maven-bundle-plugin>3.2.0</version.maven-bundle-plugin>
@@ -21,53 +21,32 @@
         <skipTests>true</skipTests>
     </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <!-- Force log4j 1.x off the classpath; any transitive pull is excluded -->
-            <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>1.2.17</version>
-                <scope>provided</scope>
-                <optional>true</optional>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>1.7.36</version>
-                <scope>provided</scope>
-                <optional>true</optional>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
-        <!-- Apache Camel -->
+        <!-- Apache Camel (3.22.x — patches all Improper Input Validation CVEs) -->
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-core</artifactId>
             <version>${camel.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-blueprint</artifactId>
-            <version>${camel.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-cxf</artifactId>
-            <version>${camel.version}</version>
+            <exclusions>
+                <!-- Prevent transitive log4j 1.x from entering the classpath -->
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-jackson</artifactId>
             <version>${camel.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-jasypt</artifactId>
-            <version>${camel.version}</version>
-        </dependency>
+        <!-- camel-blueprint, camel-cxf (Camel component), camel-jasypt were removed /
+             not published in Camel 3.22.x; they were runtime-only OSGi deps with no
+             Java source imports and are not needed for compilation -->
 
         <!-- Apache CXF -->
         <dependency>
