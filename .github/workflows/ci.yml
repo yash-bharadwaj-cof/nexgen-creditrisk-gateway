@@ -1,0 +1,33 @@
+name: CI — NexGen Credit Risk Gateway (Spring Boot)
+
+on:
+  push:
+    branches: [main]
+    paths: ['forward-engineering/**']
+  pull_request:
+    branches: [main]
+    paths: ['forward-engineering/**']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: forward-engineering
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+      - name: Build and Test
+        run: mvn clean verify -B
+      - name: Upload JAR artifact
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexgen-creditrisk-gateway
+          path: forward-engineering/target/*.jar
