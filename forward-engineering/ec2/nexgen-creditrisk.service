@@ -1,0 +1,19 @@
+[Unit]
+Description=NexGen Credit Risk Gateway
+After=network.target mongod.service
+
+[Service]
+Type=simple
+User=nexgen
+Group=nexgen
+ExecStart=/usr/bin/java $JAVA_OPTS -jar /opt/nexgen/creditrisk/nexgen-creditrisk-gateway.jar --spring.profiles.active=prod
+WorkingDirectory=/opt/nexgen/creditrisk
+EnvironmentFile=/opt/nexgen/creditrisk/env.conf
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=nexgen-creditrisk
+
+[Install]
+WantedBy=multi-user.target
