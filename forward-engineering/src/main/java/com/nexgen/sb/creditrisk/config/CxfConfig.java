@@ -26,7 +26,7 @@ public class CxfConfig {
     }
 
     @Bean
-    public Endpoint gatewaySoapEndpoint(Bus bus, GatewaySoapEndpoint gwEndpoint) {
+    public Endpoint gatewayCxfEndpoint(Bus bus, GatewaySoapEndpoint gwEndpoint) {
         EndpointImpl endpoint = new EndpointImpl(bus, gwEndpoint);
         endpoint.publish("/ws/creditriskapi");
         endpoint.getInInterceptors().add(wss4jInInterceptor());
