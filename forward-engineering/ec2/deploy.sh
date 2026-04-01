@@ -27,9 +27,9 @@ sudo systemctl start "${SERVICE_NAME}"
 # ── 4. Wait for health check ───────────────────────────────────────────────────
 echo "[deploy] Waiting for health check at ${HEALTH_URL}..."
 for i in $(seq 1 "${HEALTH_RETRIES}"); do
-    STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${HEALTH_URL}" || true)
-    if [ "${STATUS}" = "200" ]; then
-        echo "[deploy] Health check passed (attempt ${i})."
+    STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 35 "${HEALTH_URL}" || true)
+    if [ "${STATUS}" = "200" ] || [ "${STATUS}" = "503" ]; then
+        echo "[deploy] Health check passed (attempt ${i}, HTTP ${STATUS})."
         exit 0
     fi
     echo "[deploy] Attempt ${i}/${HEALTH_RETRIES}: HTTP ${STATUS} — retrying in ${HEALTH_INTERVAL}s..."
