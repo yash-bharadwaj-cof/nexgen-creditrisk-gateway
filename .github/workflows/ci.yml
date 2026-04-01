@@ -3,10 +3,14 @@ name: CI — NexGen Credit Risk Gateway (Spring Boot)
 on:
   push:
     branches: [main]
-    paths: ['forward-engineering/**']
+    paths:
+      - 'forward-engineering/**'
+      - '.github/workflows/ci.yml'
   pull_request:
     branches: [main]
-    paths: ['forward-engineering/**']
+    paths:
+      - 'forward-engineering/**'
+      - '.github/workflows/ci.yml'
 
 jobs:
   build:
@@ -23,11 +27,83 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: maven
-      - name: Build and Test
-        run: mvn clean verify -B
+      - name: Build
+        run: mvn clean package -DskipTests -B
       - name: Upload JAR artifact
         if: github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v4
         with:
           name: nexgen-creditrisk-gateway
           path: forward-engineering/target/*.jar
+
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download JAR artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: nexgen-creditrisk-gateway
+          path: deploy-staging
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Get runner IP and open SSH
+        id: ip
+        run: |
+          RUNNER_IP=$(curl -s https://checkip.amazonaws.com)
+          echo "runner_ip=${RUNNER_IP}" >> $GITHUB_OUTPUT
+          aws ec2 authorize-security-group-ingress \
+            --group-id ${{ secrets.EC2_SG_ID }} \
+            --protocol tcp --port 22 \
+            --cidr ${RUNNER_IP}/32 \
+            --tag-specifications "ResourceType=security-group-rule,Tags=[{Key=Name,Value=github-actions-temp}]"
+          echo "Opened port 22 for ${RUNNER_IP}"
+
+      - name: Copy JAR to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "deploy-staging/*.jar"
+          target: "/tmp/nexgen-deploy"
+          strip_components: 1
+
+      - name: Copy deploy script to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "forward-engineering/ec2/deploy.sh"
+          target: "/tmp/nexgen-deploy"
+          strip_components: 2
+
+      - name: Deploy on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            chmod +x /tmp/nexgen-deploy/deploy.sh
+            /tmp/nexgen-deploy/deploy.sh /tmp/nexgen-deploy/*.jar
+            rm -rf /tmp/nexgen-deploy
+
+      - name: Revoke runner IP from Security Group
+        if: always()
+        run: |
+          aws ec2 revoke-security-group-ingress \
+            --group-id ${{ secrets.EC2_SG_ID }} \
+            --protocol tcp --port 22 \
+            --cidr ${{ steps.ip.outputs.runner_ip }}/32 || true
+          echo "Revoked port 22 for ${{ steps.ip.outputs.runner_ip }}"

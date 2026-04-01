@@ -1,14 +1,15 @@
 [Unit]
-Description=NexGen Credit Risk Gateway
-After=network.target mongod.service
+Description=NexGen CreditRisk Gateway
+After=network.target
 
 [Service]
 Type=simple
 User=nexgen
 Group=nexgen
-ExecStart=/usr/bin/java $JAVA_OPTS -jar /opt/nexgen/creditrisk/nexgen-creditrisk-gateway.jar --spring.profiles.active=prod
-WorkingDirectory=/opt/nexgen/creditrisk
-EnvironmentFile=/opt/nexgen/creditrisk/env.conf
+WorkingDirectory=/opt/nexgen-creditrisk
+EnvironmentFile=/opt/nexgen-creditrisk/env.conf
+ExecStart=/usr/bin/java -Xms256m -Xmx512m -XX:+UseG1GC -XX:MaxMetaspaceSize=128m -jar /opt/nexgen-creditrisk/app.jar
+SuccessExitStatus=143
 Restart=on-failure
 RestartSec=10
 StandardOutput=journal

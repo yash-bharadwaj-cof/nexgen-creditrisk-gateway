@@ -4,24 +4,12 @@
 set -euo pipefail
 
 JAR_SOURCE="${1:?Usage: $0 <path-to-jar>}"
-DEPLOY_DIR="/opt/nexgen/creditrisk"
-JAR_NAME="nexgen-creditrisk-gateway.jar"
+DEPLOY_DIR="/opt/nexgen-creditrisk"
+JAR_NAME="app.jar"
 SERVICE_NAME="nexgen-creditrisk"
 HEALTH_URL="http://localhost:8080/nexgen/actuator/health"
 HEALTH_RETRIES=30
 HEALTH_INTERVAL=5
-# Source env.conf to pick up BASIC_AUTH_USER / BASIC_AUTH_PASSWORD if the
-# actuator health endpoint is protected. (Spring Security permitAll is
-# recommended for /actuator/health; adjust CURL_AUTH below accordingly.)
-ENV_CONF="${DEPLOY_DIR}/env.conf"
-CURL_AUTH=()
-if [ -r "${ENV_CONF}" ]; then
-    # shellcheck source=/dev/null
-    source "${ENV_CONF}"
-    if [ -n "${BASIC_AUTH_USER:-}" ] && [ -n "${BASIC_AUTH_PASSWORD:-}" ]; then
-        CURL_AUTH=(-u "${BASIC_AUTH_USER}:${BASIC_AUTH_PASSWORD}")
-    fi
-fi
 
 # ── 1. Stop the service ────────────────────────────────────────────────────────
 echo "[deploy] Stopping ${SERVICE_NAME} service..."
@@ -39,7 +27,7 @@ sudo systemctl start "${SERVICE_NAME}"
 # ── 4. Wait for health check ───────────────────────────────────────────────────
 echo "[deploy] Waiting for health check at ${HEALTH_URL}..."
 for i in $(seq 1 "${HEALTH_RETRIES}"); do
-    STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${CURL_AUTH[@]}" "${HEALTH_URL}" || true)
+    STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${HEALTH_URL}" || true)
     if [ "${STATUS}" = "200" ]; then
         echo "[deploy] Health check passed (attempt ${i})."
         exit 0
