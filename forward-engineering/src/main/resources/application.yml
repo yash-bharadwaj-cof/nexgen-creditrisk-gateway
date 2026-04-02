@@ -3,6 +3,9 @@ server:
   servlet:
     context-path: /nexgen
 
+cxf:
+  path: /
+
 spring:
   application:
     name: nexgen-creditrisk-gateway
