@@ -20,7 +20,7 @@ public class CxfConfig {
     @Bean
     public Endpoint mainSoapEndpoint(Bus bus, CreditRiskSoapEndpoint soapEndpoint) {
         EndpointImpl endpoint = new EndpointImpl(bus, soapEndpoint);
-        endpoint.publish("/ws/soap/creditrisk");
+        endpoint.publish("/soap/creditrisk");
         endpoint.getInInterceptors().add(wss4jInInterceptor());
         return endpoint;
     }
@@ -28,7 +28,7 @@ public class CxfConfig {
     @Bean
     public Endpoint gatewayCxfEndpoint(Bus bus, GatewaySoapEndpoint gwEndpoint) {
         EndpointImpl endpoint = new EndpointImpl(bus, gwEndpoint);
-        endpoint.publish("/ws/creditriskapi");
+        endpoint.publish("/creditriskapi");
         endpoint.getInInterceptors().add(wss4jInInterceptor());
         return endpoint;
     }

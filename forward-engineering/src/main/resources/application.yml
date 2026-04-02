@@ -4,7 +4,7 @@ server:
     context-path: /nexgen
 
 cxf:
-  path: /
+  path: /ws
 
 spring:
   application:
