@@ -19,7 +19,7 @@
     <description>Credit risk scoring gateway exposing SOAP and REST endpoints with external credit bureau integration</description>
 
     <properties>
-        <camel.version>3.21.0</camel.version>
+        <camel.version>3.21.4</camel.version>
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
