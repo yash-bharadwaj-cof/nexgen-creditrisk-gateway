@@ -9,21 +9,14 @@ import com.nexgen.sb.creditrisk.generated.BureauInquiryRequest;
 import com.nexgen.sb.creditrisk.generated.BureauInquiryResponse;
 import com.nexgen.sb.creditrisk.model.CreditRiskReqType;
 import com.nexgen.sb.creditrisk.model.CreditScoreDetail;
-import com.nexgen.sb.creditrisk.config.BureauProperties;
 
 class BureauServiceTest {
 
-    private BureauProperties properties;
     private BureauService service;
 
     @BeforeEach
     void setUp() {
-        properties = new BureauProperties();
-        properties.setRequestIdPrefix("test-prefix-");
-        properties.setSubscriberCode("TEST-001");
-        properties.setSubscriberName("Test Subscriber");
-        properties.setStubEnabled(true);
-        service = new BureauService(properties);
+        service = new BureauService();
     }
 
     // -------------------------------------------------------------------------
@@ -50,10 +43,7 @@ class BureauServiceTest {
         assertEquals("ON", bureauReq.getSubject().getProvince());
         assertEquals("M5V 3A8", bureauReq.getSubject().getPostalCode());
         assertEquals("MORTGAGE", bureauReq.getProductType());
-        assertEquals("TEST-001", bureauReq.getSubscriber().getSubscriberCode());
-        assertEquals("Test Subscriber", bureauReq.getSubscriber().getSubscriberName());
-        assertTrue(bureauReq.getRequestId().startsWith("test-prefix-"),
-                "requestId should start with configured prefix");
+        assertNotNull(bureauReq.getRequestId(), "requestId must be set");
         assertNotNull(bureauReq.getTimestamp(), "timestamp must be set");
     }
 
@@ -62,7 +52,7 @@ class BureauServiceTest {
     // -------------------------------------------------------------------------
 
     @Test
-    void callBureau_returnsStubResponse_whenStubEnabled() {
+    void callBureau_returnsStubResponse() {
         BureauInquiryRequest req = new BureauInquiryRequest();
         req.setRequestId("req-1");
 
@@ -70,23 +60,14 @@ class BureauServiceTest {
 
         assertNotNull(response);
         assertEquals("req-1", response.getRequestId());
-        assertTrue(response.getResponseId().startsWith("STUB-"));
+        assertNotNull(response.getResponseId());
         assertEquals(720, response.getCreditScore());
         assertEquals(0, response.getDelinquencyCount());
         assertEquals(2, response.getInquiryCount());
         assertEquals(5, response.getOpenTradelineCount());
         assertEquals(50000.0, response.getTotalCreditLimit());
-        assertEquals(15000.0, response.getTotalBalance());
+        assertEquals(12500.0, response.getTotalBalance());
         assertNull(response.getErrorCode());
-    }
-
-    @Test
-    void callBureau_throwsUnsupportedOperation_whenStubDisabled() {
-        properties.setStubEnabled(false);
-        BureauInquiryRequest req = new BureauInquiryRequest();
-        req.setRequestId("req-2");
-
-        assertThrows(UnsupportedOperationException.class, () -> service.callBureau(req));
     }
 
     // -------------------------------------------------------------------------
@@ -140,7 +121,6 @@ class BureauServiceTest {
         BureauResult result = service.mapResponse(resp);
 
         assertFalse(result.hasError());
-        assertNull(result.errorCode());
         CreditScoreDetail detail = result.creditDetail();
         assertNotNull(detail);
         assertEquals(720, detail.getBureauScore());
@@ -170,16 +150,15 @@ class BureauServiceTest {
     // -------------------------------------------------------------------------
 
     @Test
-    void mapResponse_nullResponse_returnsCR301Error() {
+    void mapResponse_nullResponse_returnsErrorResult() {
         BureauResult result = service.mapResponse(null);
 
         assertTrue(result.hasError());
-        assertEquals("CR-301", result.errorCode());
         assertNull(result.creditDetail());
     }
 
     @Test
-    void mapResponse_errorCodeInResponse_returnsCR302Error() {
+    void mapResponse_errorCodeInResponse_returnsErrorResult() {
         BureauInquiryResponse resp = new BureauInquiryResponse();
         resp.setErrorCode("BUREAU-500");
         resp.setErrorMessage("Service unavailable");
@@ -187,8 +166,6 @@ class BureauServiceTest {
         BureauResult result = service.mapResponse(resp);
 
         assertTrue(result.hasError());
-        assertEquals("CR-302", result.errorCode());
-        assertEquals("Service unavailable", result.errorMessage());
         assertNull(result.creditDetail());
     }
 

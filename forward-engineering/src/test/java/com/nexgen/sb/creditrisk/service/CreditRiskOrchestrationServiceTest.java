@@ -15,6 +15,7 @@ import com.nexgen.sb.creditrisk.model.CreditScoreDetail;
 import com.nexgen.sb.creditrisk.model.RequestHeader;
 import com.nexgen.sb.creditrisk.model.ResponseHeader;
 import com.nexgen.sb.creditrisk.scoring.StandardScoringStrategy;
+import com.nexgen.sb.creditrisk.logging.TransactionLogService;
 import com.nexgen.sb.creditrisk.exception.CreditRiskProcessingException;
 import com.nexgen.sb.creditrisk.exception.ValidationException;
 
